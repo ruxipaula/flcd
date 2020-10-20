@@ -3,13 +3,13 @@ package com.flcdproject;
 import java.util.*;
 
 public class SymbolTable {
+    private final int size = 256;
     private List<List<String>> elems;
 
     public SymbolTable() {
         this.elems = new ArrayList<>();
-        int size = 256;
 
-        for (int i = 0; i< size; i++) {
+        for (int i = 0; i< this.size; i++) {
             this.elems.add(new ArrayList<>());
         }
     }
@@ -35,6 +35,6 @@ public class SymbolTable {
         for (int index = 0; index < token.length(); index++) {
             sum += token.charAt(index);
         }
-        return (int) (sum % 256);
+        return (int) (sum % size);
     }
 }
