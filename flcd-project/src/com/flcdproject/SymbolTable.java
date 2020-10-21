@@ -14,11 +14,11 @@ public class SymbolTable {
         }
     }
 
-    public void add(String token) {
-        elems.get(hashCode(token)).add(token);
-    }
+//    public void add(String token) {
+//        elems.get(hashCode(token)).add(token);
+//    }
 
-    public Map.Entry<Integer, Integer> position(String token) {
+    public Map.Entry<Integer, Integer> addAndReturnPosition(String token) {
         List<String> values = elems.get(hashCode(token));
         if (!values.contains(token)) {
             values.add(token);
