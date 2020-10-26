@@ -3,13 +3,16 @@ package com.flcdproject;
 public class Main {
     public static void main(String[] args) {
         SymbolTable st = new SymbolTable();
-        st.add("b");
-        st.add("a");
-        st.add("c");
+        st.addAndReturnPosition("b");
+        st.addAndReturnPosition("a");
+        st.addAndReturnPosition("c");
 
         System.out.println(st.search("a"));
-        System.out.println(st.position("a"));
-        System.out.println(st.position("b"));
-        System.out.println(st.position("c"));
+        System.out.println(st.addAndReturnPosition("a"));
+        System.out.println(st.addAndReturnPosition("b"));
+        System.out.println(st.addAndReturnPosition("c"));
+
+        Scanner scanner = new Scanner();
+        scanner.start();
     }
 }

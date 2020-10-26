@@ -3,10 +3,7 @@ package com.flcdproject;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,20 +39,35 @@ public class Scanner {
 //                "while", "print", "[", "]", "{", "}", ";", " ", "+", "-", "*", "/", "%", "=", "<", ">", "<=", ">=", "==", "!=", "&&", "||");
 
         List<String> tokens = new ArrayList<>();
-        String separatorString = "int string const do else if program readInt readString while print [ ] { } ; space + - * / % = > < <= >= == != && ||";
-        String[] afterSplit = line.split("[, ?.@]+");
-        // ...
-
-        int i = 0;
-        while (i < line.length()) {
-            // if it is string
-            if (line.charAt(i) == '"') {
-                StringBuilder token = new StringBuilder();
-                char current = line.charAt(i);
-                while(current != '"') {
-                    token.append(current);
-                    i++;
-                    current = line.charAt(i);
+        String separatorString = "int string const do else if program readInt readString while print return [ ] { } ; space + - * / % = > < <= >= == != & |";
+        StringTokenizer st = new StringTokenizer(line, " ()[]{};+-*/%=><!&|", true);
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            if (!token.equals(" ")) {
+                if(token.equals("<") || token.equals(">")) {
+                    String nextToken = st.nextToken();
+                    if (nextToken.equals("=")) {
+                        tokens.add(token+nextToken);
+                    }
+                    else {
+                        tokens.add(token);
+                        tokens.add(nextToken);
+                    }
+                }
+                else {
+                    if(token.equals("&") || token.equals("|")) {
+                        String nextToken = st.nextToken();
+                        if (token.equals(nextToken)) {
+                            tokens.add(token+nextToken);
+                        }
+                        else {
+                            tokens.add(token);
+                            tokens.add(nextToken);
+                        }
+                    }
+                    else {
+                        tokens.add(token);
+                    }
                 }
             }
         }
@@ -79,12 +91,12 @@ public class Scanner {
         return m.find();
     }
 
-    private void start() {
-        String filename = "a.txt";
+    public void start() {
+        String filename = "src/data/a.txt";
         List<String> lines = readFile(filename);
 
         List<String> all = Arrays.asList("int", "string", "const", "do", "else", "if", "program", "readInt", "readString",
-                "while", "print", "[", "]", "{", "}", ";", " ", "+", "-", "*", "/", "%", "=", "<", ">", "<=", ">=", "==", "!=", "&&", "||");
+                "while", "print", "(", ")", "[", "]", "{", "}", ";", " ", "+", "-", "*", "/", "%", "=", "<", ">", "<=", ">=", "==", "!=", "&&", "||");
 
         for (String line : lines) {
             List<String> tokens = tokenize(line);
@@ -111,6 +123,8 @@ public class Scanner {
             }
 
         }
+
+        System.out.println("Classification done");
 
 
     }
