@@ -37,4 +37,8 @@ public class SymbolTable {
         }
         return (int) (sum % size);
     }
+
+    public List<List<String>> getElems() {
+        return elems;
+    }
 }
