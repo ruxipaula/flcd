@@ -1,19 +1,20 @@
 package com.flcdproject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pif {
-    private int pos;
-    private Map<String, Pair> table;
+    private List<PifPair> pif;
 
     public Pif() {
-        this.table = new HashMap<>();
-        this.pos = 1;
+        this.pif = new ArrayList<>();
     }
 
     public void add(String string, Pair code) {
-        table.put(string, code);
-        pos++;
+        pif.add(new PifPair(string, code.getX(), code.getY()));
+    }
+
+    public List<PifPair> getTable() {
+        return pif;
     }
 }
