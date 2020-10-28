@@ -1,0 +1,13 @@
+int nr ;
+nr = readInt();
+string isPrime;
+isPrime = "Number is prime";
+string isNotPrime;
+isNotPrime = "Number is not prime";
+int d;
+for(d = 2; d <nr/2; d=d+1) {
+	if (nr % 2 == 0) {
+		print(isNotPrime);
+}
+}
+print(isPrime);
