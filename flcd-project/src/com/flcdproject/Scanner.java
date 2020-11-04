@@ -86,13 +86,14 @@ public class Scanner {
                             tokens.add(nextToken);
                         }
                     } else {
-//                        if (token.equals("=")) {
-//                            tokens.add(token);
-//                            String nextToken = st.nextToken();
-//                            if (nextToken.equals("+") || nextToken.equals("-")) {
-//
-//                            }
-//                        }
+                        if (token.equals("-") || token.equals("+")) {
+                            try {
+                                int previousToken = Integer.parseInt(tokens.get(tokens.size() - 1));
+                            } catch (NumberFormatException nfe) {
+                                String nextToken = st.nextToken();
+                                token = token + nextToken;
+                            }
+                        }
                         tokens.add(token);
                     }
                 }

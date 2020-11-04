@@ -1,3 +1,4 @@
+a = -33;
 int num1;
 num1 = readInt();
 int num2;
