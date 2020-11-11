@@ -2,6 +2,7 @@ package com.lab2;
 
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class UI {
@@ -17,7 +18,7 @@ public class UI {
         System.out.println("3 - Transitions");
         System.out.println("4 - Final states");
         System.out.println("5 - Initial state");
-        System.out.println("5 - DFA check");
+        System.out.println("6 - DFA check");
     }
 
     public void displayStates() {
@@ -56,15 +57,15 @@ public class UI {
     }
 
     public void displayTransitions() {
-        List<Transition> transitions = controller.getTransitions();
+        Map<Pair, List<String>> transitions = controller.getTransitions();
         System.out.println("S = {");
-        for (Transition transition : transitions) {
+        for (Pair pair: transitions.keySet()) {
             String sb = "(" +
-                    transition.getInitialState() +
+                    pair.getX() +
                     ", " +
-                    transition.getCode() +
+                    pair.getY() +
                     ") => " +
-                    transition.getFinalState();
+                    transitions.get(pair);
             System.out.println(sb);
         }
         System.out.println("}");
@@ -77,6 +78,16 @@ public class UI {
         }
         else {
             System.out.println("Check DFA - failed");
+        }
+    }
+
+    public void acceptSequence() {
+        Scanner scanner = new Scanner(System.in);
+        String seq = scanner.nextLine();
+        if(controller.accept(seq)) {
+            System.out.println("Sequence accepted");
+        } else {
+            System.out.println("Sequence is NOT accepted");
         }
     }
 
@@ -99,7 +110,7 @@ public class UI {
                         displayAlphabet();
                         break;
                     case 3:
-                    displayTransitions();
+                        displayTransitions();
                         break;
                     case 4:
                         displayFinalStates();
@@ -110,13 +121,16 @@ public class UI {
                     case 6:
                         checkDFA();
                         break;
+                    case 7:
+                        acceptSequence();
+                        break;
                     case 0:
                         running = false;
                         break;
                     default:
                         throw new AssertionError("\nError - Unknown operation \n");
                 }
-            } catch (InputMismatchException e) {
+            } catch (InputMismatchException | AssertionError e) {
                 System.out.println(e.getMessage());
             }
         }
