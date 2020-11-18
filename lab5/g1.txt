@@ -1,0 +1,12 @@
+S A B
+a b c d e f g
+S
+S -> aSbS
+S -> aS
+S -> c
+S -> cAa
+A -> deAA | b
+A -> SfAe
+A -> g
+B -> gBfB
+B -> d
