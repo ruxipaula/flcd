@@ -7,7 +7,7 @@ public class Grammar {
     Set<String> nonTerminals;
     Set<String> terminals;
     String startingSymbol;
-    Map<String, List<String>> productions;
+    Map<String, List<List<String>>> productions;
 
     public Grammar() {
         this.nonTerminals = new HashSet<>();
@@ -28,15 +28,23 @@ public class Grammar {
 
             String line = reader.readLine();
             this.productions = new HashMap<>();
+
+
             for(String nonTerminal : this.nonTerminals) {
                 this.productions.put(nonTerminal, new ArrayList<>());
             }
 
             while (line != null) {
                 StringTokenizer st = new StringTokenizer(line, "|->");
-                String symbol = st.nextToken().trim();
+                String startingSymbol = st.nextToken().trim();
                 while(st.hasMoreTokens()) {
-                    this.productions.get(symbol).add(st.nextToken().trim());
+                    StringTokenizer tokenizer = new StringTokenizer(st.nextToken(), " ");
+
+                    List<String> symbols = new ArrayList<>();
+                    while(tokenizer.hasMoreTokens()) {
+                        symbols.add(tokenizer.nextToken());
+                    }
+                    this.productions.get(startingSymbol).add(symbols);
                 }
                 line = reader.readLine();
             }
@@ -58,11 +66,11 @@ public class Grammar {
         return startingSymbol;
     }
 
-    public Map<String, List<String>> getProductions() {
+    public Map<String, List<List<String>>> getProductions() {
         return productions;
     }
 
-    public List<String> getProductionsForNonTerminal(String nonTerminal) {
+    public List<List<String>> getProductionsForNonTerminal(String nonTerminal) {
         return productions.get(nonTerminal);
     }
 }

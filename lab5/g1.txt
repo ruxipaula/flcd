@@ -1,12 +1,6 @@
 S A B
-a b c d e f g
+a b c dd e f g
 S
-S -> aSbS
-S -> aS
-S -> c
-S -> cAa
-A -> deAA | b
-A -> SfAe
-A -> g
-B -> gBfB
-B -> d
+S -> a S b S | a S | c
+A -> dd e A | b | S f A e
+B -> g B f B | d

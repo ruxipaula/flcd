@@ -77,10 +77,18 @@ public class Main {
     }
 
     private static void displayProductions() {
-        Map<String, List<String>> productions = grammar.getProductions();
+        Map<String, List<List<String>>> productions = grammar.getProductions();
         for(String nonTerminal : productions.keySet()) {
-            for(String value: productions.get(nonTerminal)) {
-                System.out.println(nonTerminal + " -> " + value);
+            System.out.print(nonTerminal + " -> ");
+            List<List<String>> nonTerminalProductions = productions.get(nonTerminal);
+            for(List<String> production: nonTerminalProductions) {
+                for(String value: production) {
+                    System.out.print(value);
+                }
+
+                if (production != nonTerminalProductions.get(nonTerminalProductions.size()-1)) {
+                    System.out.print(" | ");
+                }
             }
             System.out.println();
         }
@@ -92,9 +100,17 @@ public class Main {
         System.out.print("NonTerminal: ");
         String nonTerminal = scanner.nextLine();
 
-        List<String> productions = grammar.getProductionsForNonTerminal(nonTerminal);
-        for(String value: productions) {
-            System.out.println(nonTerminal + " -> " + value);
+        List<List<String>> productions = grammar.getProductionsForNonTerminal(nonTerminal);
+
+        System.out.print(nonTerminal + " -> ");
+        for(List<String> production: productions) {
+            for(String value: production) {
+                System.out.print(value);
+            }
+
+            if (production != productions.get(productions.size()-1)) {
+                System.out.print(" | ");
+            }
         }
         System.out.println();
     }
