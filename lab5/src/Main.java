@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
@@ -7,8 +8,12 @@ public class Main {
     private static Grammar grammar;
 
     public static void main(String[] args) {
-        grammar = new Grammar();
-        run();
+        try {
+            grammar = new Grammar("g2.txt");
+            run();
+        } catch (IOException | RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void showMenu() {
@@ -17,6 +22,7 @@ public class Main {
         System.out.println("3 - Starting Symbol");
         System.out.println("4 - Productions");
         System.out.println("5 - Production for a given non-terminal");
+        System.out.println("6 - Run LR(0) parser");
     }
 
     private static void run() {
@@ -46,6 +52,9 @@ public class Main {
                     case 5:
                         displayProductionsForNonTerminal();
                         break;
+                    case 6:
+                        parse();
+                        break;
                     case 0:
                         running = false;
                         break;
@@ -59,14 +68,14 @@ public class Main {
     }
 
     private static void displayNonTerminals() {
-        for(String nonTerminal : grammar.getNonTerminals()) {
+        for (String nonTerminal : grammar.getNonTerminals()) {
             System.out.print(nonTerminal + " ");
         }
         System.out.println();
     }
 
     private static void displayTerminals() {
-        for(String terminal : grammar.getTerminals()) {
+        for (String terminal : grammar.getTerminals()) {
             System.out.print(terminal + " ");
         }
         System.out.println();
@@ -78,15 +87,15 @@ public class Main {
 
     private static void displayProductions() {
         Map<String, List<List<String>>> productions = grammar.getProductions();
-        for(String nonTerminal : productions.keySet()) {
+        for (String nonTerminal : productions.keySet()) {
             System.out.print(nonTerminal + " -> ");
             List<List<String>> nonTerminalProductions = productions.get(nonTerminal);
-            for(List<String> production: nonTerminalProductions) {
-                for(String value: production) {
+            for (List<String> production : nonTerminalProductions) {
+                for (String value : production) {
                     System.out.print(value);
                 }
 
-                if (production != nonTerminalProductions.get(nonTerminalProductions.size()-1)) {
+                if (production != nonTerminalProductions.get(nonTerminalProductions.size() - 1)) {
                     System.out.print(" | ");
                 }
             }
@@ -103,14 +112,24 @@ public class Main {
         List<List<String>> productions = grammar.getProductionsForNonTerminal(nonTerminal);
 
         System.out.print(nonTerminal + " -> ");
-        for(List<String> production: productions) {
-            for(String value: production) {
+        for (List<String> production : productions) {
+            for (String value : production) {
                 System.out.print(value);
             }
 
-            if (production != productions.get(productions.size()-1)) {
+            if (production != productions.get(productions.size() - 1)) {
                 System.out.print(" | ");
             }
+        }
+        System.out.println();
+    }
+
+    private static void parse() {
+        Parser parser = new Parser(grammar);
+        List<List<LRItem>> collection = parser.canonicalCollection();
+        System.out.println("\nCanonical collection: ");
+        for (List<LRItem> state : collection) {
+            System.out.println(state);
         }
         System.out.println();
     }
