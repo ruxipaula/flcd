@@ -2,12 +2,15 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Grammar {
-    Set<String> nonTerminals;
-    Set<String> terminals;
-    String startingSymbol;
-    Map<String, List<List<String>>> productions;
+    private Set<String> nonTerminals;
+    private Set<String> terminals;
+    private String startingSymbol;
+    private Map<String, List<List<String>>> productions;
+    private List<Pair<String, List<String>>> orderedProductions;
 
     private static boolean validateGrammar(Set<String> nonTerminals, Set<String> terminals,
                                            String startingSymbol, Map<String, List<List<String>>> productions) {
@@ -37,6 +40,7 @@ public class Grammar {
         this.terminals = new HashSet<>();
         this.startingSymbol = "";
         this.productions = new HashMap<>();
+        this.orderedProductions = new ArrayList<>();
 
         readFromFile(filename);
     }
@@ -50,22 +54,25 @@ public class Grammar {
         String line = reader.readLine();
         Map<String, List<List<String>>> productions = new HashMap<>();
 
+        List<Pair<String, List<String>>> orderedProductions = new ArrayList<>();
 
-        for(String nonTerminal : nonTerminals) {
+        for (String nonTerminal : nonTerminals) {
             productions.put(nonTerminal, new ArrayList<>());
         }
 
         while (line != null) {
-            StringTokenizer st = new StringTokenizer(line, "|->");
+            StringTokenizer st = new StringTokenizer(line, "|~");
             String currentSymbol = st.nextToken().trim();
-            while(st.hasMoreTokens()) {
+            while (st.hasMoreTokens()) {
                 StringTokenizer tokenizer = new StringTokenizer(st.nextToken(), " ");
 
                 List<String> symbols = new ArrayList<>();
-                while(tokenizer.hasMoreTokens()) {
+                while (tokenizer.hasMoreTokens()) {
                     symbols.add(tokenizer.nextToken());
                 }
                 productions.get(currentSymbol).add(symbols);
+
+                orderedProductions.add(new Pair<>(currentSymbol, symbols));
             }
             line = reader.readLine();
         }
@@ -79,6 +86,7 @@ public class Grammar {
         this.terminals = terminals;
         this.startingSymbol = startingSymbol;
         this.productions = productions;
+        this.orderedProductions = orderedProductions;
     }
 
     public Set<String> getNonTerminals() {
@@ -99,5 +107,13 @@ public class Grammar {
 
     public List<List<String>> getProductionsForNonTerminal(String nonTerminal) {
         return productions.get(nonTerminal);
+    }
+
+    public List<Pair<String, List<String>>> getOrderedProductions() {
+        return orderedProductions;
+    }
+
+    public List<String> getAllSymbols() {
+        return Stream.concat(nonTerminals.stream(), terminals.stream()).collect(Collectors.toList());
     }
 }

@@ -1,18 +1,15 @@
 import java.io.IOException;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     private static Grammar grammar;
 
     public static void main(String[] args) {
         try {
-            grammar = new Grammar("g2.txt");
+            grammar = new Grammar("g3.txt");
             run();
         } catch (IOException | RuntimeException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -53,7 +50,7 @@ public class Main {
                         displayProductionsForNonTerminal();
                         break;
                     case 6:
-                        parse();
+                        runLR0Parser();
                         break;
                     case 0:
                         running = false;
@@ -124,14 +121,40 @@ public class Main {
         System.out.println();
     }
 
-    private static void parse() {
+    private static void runLR0Parser() {
         Parser parser = new Parser(grammar);
-        List<List<LRItem>> collection = parser.canonicalCollection();
+        CanonicalCollection collection = parser.canonicalCollection();
+
+        // Print the Canonical collection.
         System.out.println("\nCanonical collection: ");
-        for (List<LRItem> state : collection) {
-            System.out.println(state);
+        for (List<LRItem> state : collection.getCollection()) {
+            System.out.println("s" + collection.getCollection().indexOf(state) + " = " + state);
         }
-        System.out.println();
+
+        // Print the LR(0) table.
+        System.out.println("\nLR(0) table: ");
+        LR0Table lr0Table = new LR0Table(collection, grammar.getOrderedProductions(), grammar.getAllSymbols());
+        System.out.println(lr0Table.toString());
+
+        // Parse a given sequence.
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Give a sequence:\nw = ");
+        List<String> sequence = Arrays.asList(scanner.nextLine().split("[ ]+"));
+
+        Stack<Integer> output = parser.parseSequence(grammar, lr0Table, sequence);
+
+        while (!output.empty()) {
+            System.out.print(output.pop() + ", ");
+        }
+
+        output = parser.parseSequence(grammar, lr0Table, sequence);
+        ParserOutput parserOutput = new ParserOutput();
+        parserOutput.addParsedSequence(output, grammar);
+
+        System.out.println("\nLR(0) parsing tree:");
+        parserOutput.traverseTree(parserOutput.getRoot());
+
+        System.out.println("\n");
     }
 }
 
