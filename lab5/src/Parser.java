@@ -26,7 +26,7 @@ public class Parser {
                     if (grammar.getNonTerminals().contains(symbol)) {
                         for (List<String> production : grammar.getProductionsForNonTerminal(symbol)) {
                             LRItem newItem = new LRItem(symbol, production);
-                            if (!clCopy.contains(newItem)) {
+                            if (!cl.contains(newItem)) {
                                 cl.add(newItem);
                                 changed = true;
                             }
@@ -144,7 +144,7 @@ public class Parser {
                 end = true;
                 System.out.println("\nParsing successful..");
             } else if (lr0Table.getAction(state).equals("ERROR")) {
-                throw new RuntimeException("\nError while parsing..");
+                throw new RuntimeException("\nError while parsing at state : " + state);
             }
         } while (!end);
 

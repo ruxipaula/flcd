@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -6,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            grammar = new Grammar("g3.txt");
+            grammar = new Grammar("grammar.txt");
             run();
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
@@ -58,7 +61,7 @@ public class Main {
                     default:
                         throw new AssertionError("\nError - Unknown operation \n");
                 }
-            } catch (InputMismatchException | AssertionError e) {
+            } catch (InputMismatchException | AssertionError | IOException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -121,7 +124,7 @@ public class Main {
         System.out.println();
     }
 
-    private static void runLR0Parser() {
+    private static void runLR0Parser() throws IOException {
         Parser parser = new Parser(grammar);
         CanonicalCollection collection = parser.canonicalCollection();
 
@@ -134,12 +137,13 @@ public class Main {
         // Print the LR(0) table.
         System.out.println("\nLR(0) table: ");
         LR0Table lr0Table = new LR0Table(collection, grammar.getOrderedProductions(), grammar.getAllSymbols());
-        System.out.println(lr0Table.toString());
+//        System.out.println(lr0Table.toString());
 
         // Parse a given sequence.
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Give a sequence:\nw = ");
-        List<String> sequence = Arrays.asList(scanner.nextLine().split("[ ]+"));
+//        Scanner scanner = new Scanner(System.in);
+//        System.out.print("Give a sequence:\nw = ");
+//        List<String> sequence = Arrays.asList(scanner.nextLine().split("[ ]+"));
+        List<String> sequence = readSequence("sequence.txt");
 
         Stack<Integer> output = parser.parseSequence(grammar, lr0Table, sequence);
 
@@ -155,6 +159,18 @@ public class Main {
         parserOutput.traverseTree(parserOutput.getRoot());
 
         System.out.println("\n");
+    }
+
+    public static List<String> readSequence(String filename) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        List<String> sequence = new ArrayList<>();
+        String line = reader.readLine();
+
+        while(line != null) {
+            sequence.addAll(Arrays.asList(line.split("[ ]+")));
+            line = reader.readLine();
+        }
+        return sequence;
     }
 }
 
